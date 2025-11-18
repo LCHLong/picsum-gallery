@@ -1,25 +1,29 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// CHÚ Ý: Đã thay thế BrowserRouter bằng HashRouter
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import PhotoList from './pages/PhotoList';
 import PhotoDetail from './pages/PhotoDetail';
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-100 text-gray-900 font-sans">
-        <Routes>
-          {/* Đường dẫn danh sách ảnh /photos  */}
-          <Route path="/photos" element={<PhotoList />} />
+    // Sử dụng HashRouter để đảm bảo routing hoạt động trên mọi hosting tĩnh
+    <HashRouter>
+      <Routes>
+        {/* Redirect từ root '/' tới '/photos' */}
+        <Route path="/" element={<Navigate to="/photos" replace />} />
 
-          {/* Đường dẫn chi tiết ảnh /photos/:id  */}
-          <Route path="/photos/:id" element={<PhotoDetail />} />
+        {/* Route cho trang danh sách ảnh */}
+        <Route path="/photos" element={<PhotoList />} />
 
-          {/* Mặc định chuyển hướng về /photos */}
-          <Route path="/" element={<Navigate to="/photos" replace />} />
-        </Routes>
-      </div>
-    </Router>
+        {/* Route cho trang chi tiết ảnh (dùng tham số :id) */}
+        <Route path="/photos/:id" element={<PhotoDetail />} />
+
+        {/* Xử lý 404 hoặc đường dẫn không hợp lệ */}
+        <Route path="*" element={<p className="text-center mt-20 text-2xl text-red-600">404 - Page Not Found</p>} />
+      </Routes>
+    </HashRouter>
   );
-}
+};
 
 export default App;
