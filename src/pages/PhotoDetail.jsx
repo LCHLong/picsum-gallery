@@ -4,16 +4,22 @@ import Loader from '../components/Loader';
 import { fetchPhotoDetails } from '../services/photoAPI'; // API Service
 
 const PhotoDetail = () => {
+    // Lấy ID ảnh từ URL parameters
     const { id } = useParams();
     const navigate = useNavigate();
+    // State lưu trữ dữ liệu ảnh
     const [photo, setPhoto] = useState(null);
+    // State theo dõi trạng thái loading
     const [loading, setLoading] = useState(true);
+    // State lưu trữ lỗi nếu có
     const [error, setError] = useState(null);
 
+    // Gọi API lấy chi tiết ảnh khi component mount hoặc ID thay đổi
     useEffect(() => {
         setLoading(true);
         setError(null);
 
+        // Gọi API service để lấy thông tin chi tiết ảnh
         fetchPhotoDetails(id)
             .then(data => {
                 setPhoto(data);

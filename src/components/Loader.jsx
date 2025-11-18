@@ -1,8 +1,11 @@
 // src/components/Loader.jsx
 import React from 'react';
 
+// Component hiển thị vòng tròn loading
 const Loader = ({ size = 'medium' }) => {
+    // Đặt kích thước mặc định là medium
     let styleClasses = 'w-8 h-8';
+    // Thay đổi kích thước dựa trên prop size
     if (size === 'large') {
         styleClasses = 'w-12 h-12';
     } else if (size === 'small') {

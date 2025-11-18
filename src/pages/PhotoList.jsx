@@ -3,55 +3,73 @@ import PhotoCard from '../components/PhotoCard';
 import Loader from '../components/Loader';
 import { fetchPhotos } from '../services/photoAPI'; // <-- Tách logic API
 
+// Component trang danh sách ảnh với infinite scroll
 const PhotoList = () => {
+    // State lưu trữ danh sách ảnh
     const [photos, setPhotos] = useState([]);
+    // State theo dõi trang hiện tại
     const [page, setPage] = useState(1);
+    // State theo dõi trạng thái loading khi tải thêm ảnh
     const [loading, setLoading] = useState(false);
+    // State kiểm tra còn ảnh để tải không
     const [hasMore, setHasMore] = useState(true);
+    // State theo dõi lần tải đầu tiên
     const [initialLoading, setInitialLoading] = useState(true);
 
+    // Ref để theo dõi phần tử cuối cùng cho Intersection Observer
     const observer = useRef();
 
+    // Callback để thiết lập Intersection Observer cho ảnh cuối cùng
     const lastPhotoElementRef = useCallback(node => {
+        // Nếu đang loading thì thoát ra
         if (loading) return;
+        // Hủy observer cũ nếu có
         if (observer.current) observer.current.disconnect();
 
+        // Tạo observer mới để theo dõi khi user cuộn tới cuối danh sách
         observer.current = new IntersectionObserver(entries => {
+            // Nếu ảnh cuối cùng hiện trong viewport và còn ảnh để tải, tăng trang
             if (entries[0].isIntersecting && hasMore) {
                 setPage(prevPage => prevPage + 1);
             }
         }, {
-            // Tải sớm hơn khi còn cách 50px so với cuối trang
+            // Bắt đầu tải sớm khi còn cách 50px so với cuối trang
             rootMargin: '50px'
         });
 
         if (node) observer.current.observe(node);
     }, [loading, hasMore]);
 
+    // Effect để tải ảnh khi trang (page) thay đổi
     useEffect(() => {
+        // Hàm async để gọi API và cập nhật state
         const loadPhotos = async () => {
             setLoading(true);
             try {
+                // Gọi API service để lấy danh sách ảnh
                 const data = await fetchPhotos(page); // <-- Dùng API service
 
+                // Nếu không có ảnh, đánh dấu không còn ảnh để tải
                 if (data.length === 0) {
                     setHasMore(false);
                 } else {
+                    // Thêm ảnh mới vào danh sách
                     setPhotos(prevPhotos => {
-                        // Đảm bảo không trùng lặp khi fetch (chủ yếu là cho lần đầu)
+                        // Loại bỏ ảnh trùng lặp bằng cách kiểm tra ID
                         const newPhotoIds = new Set(data.map(p => p.id));
                         const filteredPrevPhotos = prevPhotos.filter(p => !newPhotoIds.has(p.id));
                         return [...filteredPrevPhotos, ...data];
                     });
                 }
             } catch (error) {
-                // Handle error (optional: show error message to user)
+                // Xử lý lỗi - đánh dấu không còn ảnh để tải
                 setHasMore(false);
             }
             setLoading(false);
             setInitialLoading(false);
         };
 
+        // Gọi hàm tải ảnh
         loadPhotos();
     }, [page]);
 
