@@ -50,7 +50,7 @@ const PhotoDetail = () => {
     }
 
     return (
-        // ĐÃ CẬP NHẬT: Wrapper div MỚI cho Background và Min-Height
+        // Wrapper div để background gradient kéo dài hết màn hình (min-h-screen)
         <div className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-50">
 
             <div className="container mx-auto p-4 md:p-8 max-w-7xl">
@@ -64,7 +64,7 @@ const PhotoDetail = () => {
 
                 <div className="bg-white rounded-3xl shadow-2xl overflow-hidden p-6 md:p-10">
 
-                    {/* 1. KHUNG ẢNH (Có chức năng Fullsize khi click vào ảnh) */}
+                    {/* 1. KHUNG ẢNH (Click vào ảnh hoặc rê chuột để thấy hiệu ứng viền và icon) */}
                     <div className="mb-8 relative group">
                         <a
                             href={photo.download_url}
@@ -76,12 +76,17 @@ const PhotoDetail = () => {
                             <img
                                 src={photo.download_url}
                                 alt={`Photo by ${photo.author}`}
-                                className="block max-w-full mx-auto max-h-[90vh] object-contain rounded-xl border-4 border-gray-100 shadow-xl transition-opacity duration-300 group-hover:opacity-90"
+                                // Hiệu ứng ảnh nổi lên khi hover
+                                className="block max-w-full mx-auto max-h-[90vh] object-contain rounded-xl border-4 border-gray-100 shadow-xl transition-all duration-300 group-hover:border-indigo-400 group-hover:shadow-2xl"
                             />
-                            {/* Icon Fullsize overlay */}
-                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
-                                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4M4 20l5-5m11 5v-4m0 4h-4m4 0l-5-5"></path></svg>
+
+                            {/* ĐÃ CẬP NHẬT: Icon Fullsize Tinh tế, nằm ở CHÍNH GIỮA */}
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                <div className="p-4 bg-black/50 rounded-full backdrop-blur-sm shadow-xl">
+                                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4M4 20l5-5m11 5v-4m0 4h-4m4 0l-5-5"></path></svg>
+                                </div>
                             </div>
+
                         </a>
                     </div>
 
@@ -112,6 +117,7 @@ const PhotoDetail = () => {
                             <div className="pt-4 border-t space-y-4">
                                 <p className="text-sm text-gray-500 mb-2">Original Dimensions: {photo.width} x {photo.height}</p>
 
+                                {/* NÚT VIEW FULLSIZE */}
                                 <a
                                     href={photo.download_url}
                                     target="_blank"
@@ -123,6 +129,7 @@ const PhotoDetail = () => {
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-7l7 7m0 0H14m3-3v3"></path></svg>
                                 </a>
 
+                                {/* View Source Website */}
                                 <a
                                     href={photo.url}
                                     target="_blank"
