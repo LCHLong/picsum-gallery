@@ -1,4 +1,3 @@
-// src/pages/PhotoList.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PhotoCard from '../components/PhotoCard';
 import Loader from '../components/Loader';
@@ -9,7 +8,7 @@ const PhotoList = () => {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [initialLoading, setInitialLoading] = useState(true); // Để ẩn Loader khi không cần
+    const [initialLoading, setInitialLoading] = useState(true);
 
     const observer = useRef();
 
@@ -66,38 +65,47 @@ const PhotoList = () => {
     }
 
     return (
-        <div className="container mx-auto p-4 bg-white rounded-lg shadow-xl my-6">
-            <h1 className="text-4xl font-extrabold text-center mb-10 text-indigo-700 border-b-2 pb-2">
-                📷 Lorem Picsum Gallery
-            </h1>
+        // ĐÃ CẢI THIỆN 1: Thêm background gradient và đảm bảo chiều cao tối thiểu
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100">
+            <div className="container mx-auto p-4 md:p-8">
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {photos.map((photo, index) => {
-                    const isLastElement = photos.length === index + 1;
-                    return (
-                        <PhotoCard
-                            refProp={isLastElement ? lastPhotoElementRef : null}
-                            key={photo.id + index} // Dùng id và index để đảm bảo key độc nhất
-                            photo={photo}
-                        />
-                    );
-                })}
+                {/* ĐÃ CẢI THIỆN 2: Header Typography và Gradient Text */}
+                <header className="text-center pt-12 pb-10">
+                    <h1 className="text-5xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-600">
+                        Lorem Picsum Gallery
+                    </h1>
+                    <p className="text-xl text-gray-600 mt-3 font-light">Scroll down to explore a vast collection of high-quality photos.</p>
+                </header>
+
+                {/* ĐÃ CẢI THIỆN 3: Bố cục Grid - Loại bỏ khung trắng lớn, tăng gap */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+                    {photos.map((photo, index) => {
+                        const isLastElement = photos.length === index + 1;
+                        return (
+                            <PhotoCard
+                                refProp={isLastElement ? lastPhotoElementRef : null}
+                                key={photo.id + index}
+                                photo={photo}
+                            />
+                        );
+                    })}
+                </div>
+
+                {/* Loading Indicator cho Infinite Scroll */}
+                {loading && <Loader />}
+
+                {!hasMore && !loading && photos.length > 0 && (
+                    <p className="text-center mt-16 pb-12 text-lg font-medium text-gray-500">
+                        You have reached the end of the collection.
+                    </p>
+                )}
+
+                {photos.length === 0 && !loading && (
+                    <p className="text-center mt-8 text-lg font-medium text-red-500">
+                        No photos found.
+                    </p>
+                )}
             </div>
-
-            {/* Loading Indicator cho Infinite Scroll */}
-            {loading && <Loader />}
-
-            {!hasMore && !loading && photos.length > 0 && (
-                <p className="text-center mt-8 text-lg font-medium text-gray-500">
-                    You have reached the end of the collection.
-                </p>
-            )}
-
-            {photos.length === 0 && !loading && (
-                <p className="text-center mt-8 text-lg font-medium text-red-500">
-                    No photos found.
-                </p>
-            )}
         </div>
     );
 };
